@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Hero Section -->
+    <div class="hero-section d-flex align-items-center justify-content-center text-center" style="background-image: url('https://source.unsplash.com/1600x900/?blog,writing'); height: 50vh; background-size: cover; background-position: center; animation: fadeIn 2s ease-in-out;">
+        <div class="overlay" style="background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; position: absolute;"></div>
+        <div class="container position-relative">
+            <h1 class="display-3 text-white mb-4" style="font-weight: 700;">
+                Welcome to PostHub
+            </h1>
+            <p class="lead text-white mb-5">Discover engaging stories and share your voice with the world.</p>
+            <a href="{% url 'blogs' %}" class="btn btn-lg btn-primary">
+                <i class="fas fa-blog"></i> Explore Blogs
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container py-5">
+        <div class="row text-center">
+            <h2 class="mb-5">Why PostHub?</h2>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
+                <h4>Create Blogs</h4>
+                <p>Share your stories, ideas, and experiences with an engaged audience in just a few clicks.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h4>Engage with Readers</h4>
+                <p>Receive feedback, engage in meaningful discussions, and build a community around your posts.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                <h4>Track Your Success</h4>
+                <p>Monitor the performance of your blogs, understand your audience, and grow your influence.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Highlights Section -->
+    <div class="container py-5">
+        <h2 class="text-center mb-5">Latest Blogs</h2>
+        <div class="row">
+            {% for blog in blogs|slice:":3" %}  {# Limit to 3 latest blogs #}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm" style="background-color: #343a40; border-radius: 20px;">
+                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ blog.title }}</h5>
+                        <p class="card-text text-white">{{ blog.body_content|slice:":100" }}...</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-outline-light">
+                            <i class="fas fa-book-open"></i> Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- CSS Animations and Custom Styles -->
+<style>
+    .hero-section {
+        position: relative;
+        color: white;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card-footer .btn-outline-light {
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .card-footer .btn-outline-light:hover {
+        background-color: #ffd700;
+    }
+</style>
+
+{% endblock %}

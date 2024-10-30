@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% load static %}  <!-- Load the static files template tag library -->
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        {% for blog in blogs %}
+        <div class="col-md-6 col-lg-4 mb-4 d-flex align-items-stretch">
+            <div class="card shadow-sm" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 20px;">
+                <!-- Card Image -->
+                {% if blog.banner %}
+                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                {% else %}
+                    <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image" style="max-height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                {% endif %}
+                
+                <div class="card-body">
+                    <!-- Post Title -->
+                    <h5 class="card-title text-primary">
+                        <i class="fas fa-heading"></i> {{ blog.title }}
+                    </h5>
+
+                    <!-- Post Author -->
+                    <p class="card-subtitle mb-2" style="color: #f8f9fa;">
+                        <i class="fas fa-user"></i> Author: {{ blog.author }}
+                    </p>
+
+                    <!-- Post Body Content -->
+                    <p class="card-text text-white">
+                        <i class="fas fa-align-left"></i> {{ blog.body_content|slice:":150" }}...
+                    </p>
+                </div>
+
+                <!-- Read More Button -->
+                <div class="card-footer text-center">
+                    <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i> Read More
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- CSS Animations and Custom Styles -->
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock content %}

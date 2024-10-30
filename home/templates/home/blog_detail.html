@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Blog Card -->
+            <div class="card shadow-sm" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 20px;">
+                <!-- Blog Banner Image -->
+                <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 400px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                
+                <div class="card-body">
+                    <!-- Blog Title -->
+                    <h1 class="card-title text-primary">
+                        <i class="fas fa-heading"></i> {{ blog.title }}
+                    </h1>
+
+                    <!-- Blog Author and Date Created -->
+                    <p class="card-subtitle mb-3" style="color: #b3b3b3;">  <!-- Made the author text lighter here -->
+                        <i class="fas fa-user"></i> By {{ blog.author }} 
+                        | <i class="fas fa-calendar-alt"></i> {{ blog.timestamp|date:"F j, Y, g:i A"}}
+                    </p>
+
+                    <!-- Blog Content -->
+                    <p class="card-text text-white" style="line-height: 1.8;">
+                        {{ blog.body_content|safe }}
+                    </p>
+                </div>
+
+                <!-- Blog Footer with Social Media Share Icons -->
+                <div class="card-footer d-flex justify-content-between align-items-center" style="background-color: #2b2f33; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                    <p class="mb-0 text-muted">Share this post:</p>
+                    <div>
+                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS Animations and Custom Styles -->
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    /* Styling for the blog content */
+    p.card-text {
+        font-size: 1.1rem;
+        margin-top: 20px;
+    }
+
+    .btn-outline-light {
+        border-radius: 50px;
+        margin-left: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #ffd700; /* Gold color on hover */
+        transform: scale(1.1);
+    }
+</style>
+
+{% endblock %}
