@@ -18,6 +18,7 @@ def home(request):
     return render(request, 'home/index.html', {'blogs': blogs, 'categories': categories})
 
 # List all blogs view
+
 def blogs_list(request):
     blogs = Blog.objects.all()
     categories = Category.objects.all()

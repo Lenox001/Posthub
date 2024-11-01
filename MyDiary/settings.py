@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-5(4ue&=(%4b8!qvpq62we
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'posthub-f31489e2d3b4.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'posthub-f31489e2d3b4.herokuapp.com','lenoxy.pythonanywhere.com']
 SECRET_KEY='totaly3&)8ocn)!nlt1@8pt$a)77(07u0rl$$!q58#mxo6)_bi'
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-fallback-key')
 
