@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Author Profile Card -->
+            <div class="card shadow-sm animated-card">
+                <div class="card-body">
+                    <h1 class="card-title text-primary">{{ author.username }}'s Profile</h1>
+                    
+                    {% if profile.profile_picture %}
+                        <div class="text-center mb-4">
+                            <img src="{{ profile.profile_picture.url }}" alt="{{ author.username }}'s Profile Picture" class="rounded-circle" style="max-width: 200px;">
+                        </div>
+                    {% endif %}
+
+                    <p><strong>Email:</strong> {{ author.email }}</p>
+                    <p><strong>Bio:</strong> {{ profile.bio }}</p>
+                    <p><strong>Date Joined:</strong> {{ author.date_joined|date:"F j, Y" }}</p>
+                    <p><strong>Number of Blogs:</strong> {{ author.blog_set.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS Animations and Custom Styles -->
+<style>
+  
+    .animated-card {
+        background-color: #2c2f33; /* Darker background color */
+        border: 2px solid #007bff; /* Blue outline */
+        border-radius: 20px;
+        animation: fadeInUp 0.6s ease-in-out;
+        overflow: hidden;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-title {
+        margin-top: 0;
+    }
+
+    .card-body {
+        line-height: 1.6;
+        color: #ffffff; /* Light text color for contrast */
+    }
+
+    /* Custom styles for profile picture */
+    .rounded-circle {
+        border: 2px solid #007bff; /* Blue outline for the profile picture */
+    }
+</style>
+{% endblock %}

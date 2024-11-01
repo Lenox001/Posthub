@@ -1,37 +1,47 @@
 {% extends "layout.html" %}
-{% load static %}  <!-- Load the static files template tag library -->
+{% load static %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row">
         {% for blog in blogs %}
-        <div class="col-md-6 col-lg-4 mb-4 d-flex align-items-stretch">
-            <div class="card shadow-sm" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 20px;">
-                <!-- Card Image -->
+        <div class="col-md-6 col-lg-4 mb-4 d-flex ">
+            <div class="card shadow-sm flex-fill" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 10px; display: flex; flex-direction: column; padding: 20px; border: 2px solid transparent; border-image: linear-gradient(to right, #ff5733, #33ff57, #3357ff, #f3ff33, #ff33a1) 1; overflow: hidden;">
                 {% if blog.banner %}
-                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 30px; border-top-right-radius: 30px;">
                 {% else %}
-                    <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image" style="max-height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image" style="max-height: 200px; object-fit: cover; border-top-left-radius: 30px; border-top-right-radius: 30px;">
                 {% endif %}
                 
-                <div class="card-body">
-                    <!-- Post Title -->
+                <div class="card-body d-flex flex-grow-1 flex-column">
                     <h5 class="card-title text-primary">
                         <i class="fas fa-heading"></i> {{ blog.title }}
                     </h5>
-
-                    <!-- Post Author -->
                     <p class="card-subtitle mb-2" style="color: #f8f9fa;">
                         <i class="fas fa-user"></i> Author: {{ blog.author }}
                     </p>
-
-                    <!-- Post Body Content -->
-                    <p class="card-text text-white">
+                    <p class="card-text text-white flex-grow-1" style="margin: 0; padding: 10px 0;">
                         <i class="fas fa-align-left"></i> {{ blog.body_content|slice:":150" }}...
+                    </p>
+
+                    <!-- Displaying Tags -->
+                    <div class="tags mb-2">
+                        {% for tag in blog.tags.all %}
+                            <span class="badge badge-info">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Displaying Comments Count -->
+                    <p class="text-success mb-1" style="margin: 0;">
+                        <i class="fas fa-comments"></i> {{ blog.comments.count }} Comments
+                    </p>
+
+                    <!-- Displaying Likes Count -->
+                    <p class="text-success mb-0" style="margin: 0;">
+                        <i class="fas fa-thumbs-up"></i> {{ blog.likes.count }} Likes
                     </p>
                 </div>
 
-                <!-- Read More Button -->
                 <div class="card-footer text-center">
                     <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-primary">
                         <i class="fas fa-book-open"></i> Read More
@@ -43,7 +53,6 @@
     </div>
 </div>
 
-<!-- CSS Animations and Custom Styles -->
 <style>
     @keyframes fadeInUp {
         from {
@@ -58,10 +67,16 @@
 
     .card {
         transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .card:hover {
         transform: scale(1.05);
     }
+
+    .tags {
+        margin-top: auto; /* Push tags to the bottom */
+    }
 </style>
-{% endblock content %}
+{% endblock %}

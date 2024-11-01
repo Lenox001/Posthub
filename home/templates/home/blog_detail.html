@@ -1,48 +1,36 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <!-- Blog Card -->
-            <div class="card shadow-sm" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 20px;">
-                <!-- Blog Banner Image -->
-                <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 400px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                
-                <div class="card-body">
-                    <!-- Blog Title -->
-                    <h1 class="card-title text-primary">
-                        <i class="fas fa-heading"></i> {{ blog.title }}
-                    </h1>
-
-                    <!-- Blog Author and Date Created -->
-                    <p class="card-subtitle mb-3" style="color: #b3b3b3;">  <!-- Made the author text lighter here -->
-                        <i class="fas fa-user"></i> By {{ blog.author }} 
-                        | <i class="fas fa-calendar-alt"></i> {{ blog.timestamp|date:"F j, Y, g:i A"}}
-                    </p>
-
-                    <!-- Blog Content -->
-                    <p class="card-text text-white" style="line-height: 1.8;">
-                        {{ blog.body_content|safe }}
-                    </p>
-                </div>
-
-                <!-- Blog Footer with Social Media Share Icons -->
-                <div class="card-footer d-flex justify-content-between align-items-center" style="background-color: #2b2f33; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
-                    <p class="mb-0 text-muted">Share this post:</p>
-                    <div>
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- CSS Animations and Custom Styles -->
 <style>
+    body {
+        background-color: #121212; /* Dark background */
+        color: #ffffff; /* Light text color */
+    }
+
+    .container {
+        padding: 30px; /* Padding for the container */
+    }
+
+    .card {
+        background-color: #343a40; /* Dark card background */
+        border: none; /* Remove default border */
+        border-radius: 15px; /* Rounded corners */
+        position: relative; /* Position relative for outline */
+        overflow: hidden; /* Prevent overflow */
+        transition: transform 0.2s, box-shadow 0.3s; /* Smooth scale effect and shadow transition */
+        box-shadow: 0 0 0 4px transparent; /* Initial transparent outline */
+        padding: 20px; /* Padding inside the card */
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+        box-shadow: 0 0 0 4px rgba(187, 134, 252, 1); /* Colorful outline on hover */
+    }
+
+    .animated-card {
+        animation: fadeInUp 0.6s ease-in-out; /* Fade-in animation */
+    }
+
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -54,30 +42,229 @@
         }
     }
 
-    .card {
-        transition: transform 0.3s ease;
+    .card-title {
+        margin-top: 20px; /* Space above title */
+        color: #bb86fc; /* Light purple for title */
     }
 
-    .card:hover {
-        transform: scale(1.05);
+    .card-text {
+        line-height: 1.6; /* Improved readability */
+        color: #e0e0e0; /* Slightly lighter text for body */
+        margin-top: 15px; /* Space above text */
     }
 
-    /* Styling for the blog content */
-    p.card-text {
-        font-size: 1.1rem;
-        margin-top: 20px;
+    .author-section, .likes-section, .social-share, .categories-section {
+        padding: 15px; /* Padding for sections */
+        border-top: 1px solid #444; /* Subtle separation */
+        margin-top: 15px; /* Space above sections */
+    }
+
+    .author-link {
+        color: #28a745; /* Color for author link */
+        text-decoration: none; /* No underline */
+        transition: color 0.2s; /* Smooth transition for color */
+    }
+
+    .author-link:hover {
+        text-decoration: underline; /* Underline on hover */
+        color: #fff; /* Change color on hover */
+    }
+
+    .published-text {
+        color: #bbb; /* Light gray for published date */
+    }
+
+    .categories-section {
+        color: #f8f9fa; /* Light text for categories */
     }
 
     .btn-outline-light {
-        border-radius: 50px;
-        margin-left: 10px;
-        transition: background-color 0.3s ease, transform 0.3s ease;
+        border-radius: 20px; /* Rounded buttons */
+        margin-right: 10px; /* Spacing between buttons */
+        transition: background-color 0.2s; /* Smooth transition for buttons */
     }
 
-    .btn-outline-light:hover {
-        background-color: #ffd700; /* Gold color on hover */
-        transform: scale(1.1);
+    .btn-outline-light:hover, 
+    .btn-outline-primary:hover, 
+    .btn-outline-info:hover, 
+    .btn-outline-secondary:hover {
+        background-color: #bb86fc; /* Light purple on hover */
+        color: #ffffff; /* White text on hover */
+    }
+
+    .likes-section {
+        margin-top: 20px; /* Space above likes section */
+    }
+
+    /* Comments Section */
+    .comments-section {
+        margin-top: 40px; /* Space above comments */
+    }
+
+    .comment {
+        background-color: #2c2c2c; /* Dark background for comments */
+        border-radius: 10px; /* Rounded corners for comments */
+        padding: 15px; /* Padding for comments */
+        margin-bottom: 15px; /* Space between comments */
+    }
+
+    .comment strong a {
+        color: #bb86fc; /* Light purple for commenter links */
+    }
+
+    /* Form Styles */
+    form {
+        margin-top: 20px; /* Space above form */
+    }
+
+    .form-control {
+        background-color: #343a40; /* Dark background for form controls */
+        color: #ffffff; /* Light text for form controls */
+    }
+
+    .form-control::placeholder {
+        color: #bbb; /* Placeholder color */
+    }
+
+    .btn-primary {
+        background-color: #bb86fc; /* Primary button color */
+        border: none; /* Remove border */
     }
 </style>
 
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Blog Card -->
+            <div class="card shadow-sm animated-card">
+                <!-- Blog Title -->
+                <h1 class="card-title">{{ blog.title }}</h1>
+
+                <!-- Author Section -->
+                <div class="author-section mb-3">
+                    <p>
+                        <strong>
+                            <a href="{% url 'author_profile' blog.author.id %}" class="author-link btn btn-sm btn-light">{{ blog.author.username }}</a>
+                        </strong>
+                        <em class="published-text">Published on {{ blog.timestamp|date:"F j, Y" }}</em>
+                    </p>
+                </div>
+
+                <!-- Categories Section -->
+                <div class="categories-section mb-3">
+                    <strong>Categories:</strong>
+                    <ul class="list-inline">
+                        {% for category in blog.categories.all %}
+                            <li class="list-inline-item">
+                                <a href="{% url 'category_view' category.slug %}" class="btn btn-outline-secondary btn-sm">{{ category.name }}</a>
+                            </li>
+                        {% empty %}
+                            <li class="list-inline-item">No categories assigned.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Blog Content -->
+                <div class="card-body">
+                    <p class="card-text">{{ blog.body_content|safe }}</p>
+
+                    <!-- Likes Section -->
+                    <div class="likes-section">
+                        <button id="like-button" class="btn btn-outline-light" data-blog-id="{{ blog.id }}">
+                            {% if is_liked %}Unlike{% else %}Like{% endif %}
+                        </button>
+                        <p id="total-likes" class="text-info">Likes: {{ blog.likes.count }}</p>
+                    </div>
+
+                    <!-- Social Media Share Links -->
+                    <div class="social-share">
+                        <p class="text-light">Share this post:</p>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="btn btn-outline-primary" target="_blank">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ blog.title }}" class="btn btn-outline-info" target="_blank">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ blog.title }}" class="btn btn-outline-secondary" target="_blank">
+                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="comments-section mt-4">
+                <h3>Comments</h3>
+                <div id="comments">
+                    {% for comment in comments %}
+                        <div class="comment mb-2">
+                            <p>
+                                <strong>
+                                    <i class="fas fa-user" style="margin-right: 5px;"></i>
+                                    <a href="{% url 'author_profile' comment.author.id %}">{{ comment.author.username }}</a>
+                                </strong>
+                                <em>{{ comment.timestamp|date:"F j, Y, g:i A" }}</em>
+                            </p>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    {% empty %}
+                        <p>No comments yet.</p>
+                    {% endfor %}
+                </div>
+
+                <h4>Add a Comment:</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX for liking/unliking a blog post -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const likeButton = document.getElementById('like-button');
+
+        likeButton.addEventListener('click', function() {
+            const blogId = this.dataset.blogId;
+
+            fetch(`/like/${blogId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),  // Ensure you handle CSRF tokens
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_liked) {
+                    this.innerText = "Unlike";  // Update button text or state
+                } else {
+                    this.innerText = "Like";
+                }
+                document.getElementById('total-likes').innerText = `Likes: ${data.total_likes}`;
+            });
+        });
+    });
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
 {% endblock %}

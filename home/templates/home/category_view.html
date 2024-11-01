@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #121212; /* Dark background for the body */
+        color: #ffffff; /* Light text color */
+    }
+
+    h1, h5 {
+        color: #bb86fc; /* Purple color for headings */
+    }
+
+    .container {
+        padding: 30px; /* Spacing around the container */
+    }
+
+    .card {
+        border: 2px solid transparent; /* Initial transparent border for animation */
+        transition: border-color 0.3s ease; /* Smooth border color transition */
+        overflow: hidden; /* Prevent content overflow */
+        border-radius: 10px; /* Rounded corners */
+        height: 100%; /* Ensure consistent height */
+    }
+
+    .card:hover {
+        border-color: #bb86fc; /* Purple border on hover */
+        transform: translateY(-5px); /* Slight lift effect on hover */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+    }
+
+    .card-img-top {
+        height: 200px; /* Set a fixed height for images */
+        object-fit: cover; /* Maintain aspect ratio */
+    }
+
+    .btn-outline-light {
+        border: 1px solid #bb86fc; /* Light purple border */
+        color: #bb86fc; /* Light purple text */
+    }
+
+    .btn-outline-light:hover {
+        background-color: #bb86fc; /* Light purple background on hover */
+        color: #ffffff; /* White text on hover */
+    }
+
+    /* Additional styling for responsiveness */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px; /* Less padding on smaller screens */
+        }
+
+        .card-img-top {
+            height: 150px; /* Smaller height for images on small screens */
+        }
+    }
+</style>
+
+<div class="container py-5">
+    <h1 class="text-light">Blogs in {{ category.name }}</h1>
+    
+    {% if blogs %}
+        <div class="row">
+            {% for blog in blogs %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm bg-dark text-white">
+                        <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ blog.title }}</h5>
+                            <p class="card-text">{{ blog.body_content|truncatewords:20 }}</p>
+                            <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-outline-light">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-light">No blogs found in this category.</p>
+    {% endif %}
+</div>
+{% endblock %}

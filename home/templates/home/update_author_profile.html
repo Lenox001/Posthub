@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #121212;  /* Dark background */
+        color: #f0f0f0;  /* Light text color */
+        font-family: 'Poppins', sans-serif;  /* Font style */
+    }
+    .container {
+        padding-top: 20px;  /* Padding for the container */
+        max-width: 800px;  /* Increased max width for the form container */
+        margin: auto;  /* Center the container */
+        animation: fadeIn 1.5s ease-in-out;  /* Animation effect */
+    }
+    h2 {
+        color: #ffd700;  /* Bright color for the heading */
+        text-align: center;  /* Center the heading */
+        margin-bottom: 20px;  /* Space below heading */
+    }
+    .profile-update-card {
+        background-color: #2c2c2c;  /* Card background */
+        border: 2px solid #ffd700;  /* Gold outline */
+        border-radius: 10px;  /* Rounded corners */
+        padding: 20px;  /* Padding inside card */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);  /* Shadow effect */
+    }
+    .form-group {
+        margin-bottom: 15px;  /* Space between form groups */
+    }
+    label {
+        display: block;  /* Make label a block element */
+        margin-bottom: 5px;  /* Space below label */
+        font-weight: bold;  /* Make label bold */
+        color: #ffd700;  /* Label color */
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    input[type="file"] {
+        width: 100%;  /* Full width for inputs */
+        padding: 10px;  /* Padding inside inputs */
+        border: 1px solid #555;  /* Border color */
+        border-radius: 5px;  /* Rounded corners */
+        background-color: #1e1e1e;  /* Darker input background */
+        color: #f0f0f0;  /* Light text color */
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+        border-color: #ffd700;  /* Highlight border on focus */
+        outline: none;  /* Remove default outline */
+    }
+    button {
+        background-color: #ffd700;  /* Button color */
+        color: #121212;  /* Dark text color */
+        border: none;  /* Remove default border */
+        padding: 10px 20px;  /* Padding for button */
+        border-radius: 5px;  /* Rounded corners */
+        cursor: pointer;  /* Change cursor on hover */
+        transition: background-color 0.3s;  /* Smooth background color transition */
+    }
+    button:hover {
+        background-color: #ffcc00;  /* Lighter gold on hover */
+    }
+    .image-container {
+        display: flex;  /* Use flexbox for layout */
+        align-items: center;  /* Center align items */
+        margin-bottom: 15px;  /* Space below image section */
+        padding: 10px;  /* Padding around the image section */
+        background-color: #2c2c2c;  /* Match card background */
+        border-radius: 10px;  /* Rounded corners */
+        border: 2px solid #ffd700;  /* Outline for the image section */
+    }
+    .profile-picture-wrapper {
+        display: flex;  /* Align image and button */
+        align-items: center;  /* Center vertically */
+        flex: 1;  /* Allow it to grow and take available space */
+        max-width: 100%;  /* Ensure it doesn't overflow */
+        overflow: hidden;  /* Hide overflow */
+        text-overflow: ellipsis;  /* Ellipsis for overflow text */
+        white-space: nowrap;  /* Prevent text wrapping */
+    }
+    .profile-picture-wrapper img {
+        max-width: 80px;  /* Set a max width for the image */
+        height: auto;  /* Maintain aspect ratio */
+        border-radius: 5px;  /* Rounded corners for images */
+        margin-right: 10px;  /* Space between image and button */
+    }
+</style>
+
+<div class="container">
+    <h2>Update Your Profile</h2>
+    <div class="profile-update-card">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+    {% if author_profile.profile_picture %}
+        <div class="image-container">
+            <strong>Profile Picture:</strong>
+            <div class="profile-picture-wrapper">
+                <img src="{{ author_profile.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail">
+                <button class="btn btn-secondary" style="flex: 1;">View Profile Picture</button>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
