@@ -46,7 +46,7 @@
         <div class="text-center mb-4">
             <h5>Filter by Category:</h5>
             <div class="d-flex flex-wrap justify-content-center" role="group" aria-label="Category filter">
-                {% for category in categories %}
+                {% for category in categorys %}
                     <a href="{% url 'category_view' category.slug %}" class="btn btn-outline-primary m-1">
                         {{ category.name }}
                     </a>
