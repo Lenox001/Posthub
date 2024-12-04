@@ -1,270 +1,615 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <style>
-    body {
-        background-color: #121212; /* Dark background */
-        color: #ffffff; /* Light text color */
-    }
+  body {
+    background-color: #121212; /* Dark background */
+    color: #ffffff; /* Light text color */
+  }
 
+  .container {
+    padding: 30px; /* Padding for the container */
+  }
+
+  .card {
+    background-color: #343a40; /* Dark card background */
+    border: none; /* Remove default border */
+    border-radius: 15px; /* Rounded corners */
+    position: relative; /* Position relative for outline */
+    overflow: hidden; /* Prevent overflow */
+    transition: transform 0.2s, box-shadow 0.3s; /* Smooth scale effect and shadow transition */
+    box-shadow: 0 0 0 4px transparent; /* Initial transparent outline */
+    padding: 20px; /* Padding inside the card */
+  }
+
+  .card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 0 0 4px rgba(187, 134, 252, 1); /* Colorful outline on hover */
+  }
+
+  .animated-card {
+    animation: fadeInUp 0.6s ease-in-out; /* Fade-in animation */
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-title {
+    margin-top: 20px; /* Space above title */
+    color: #bb86fc; /* Light purple for title */
+  }
+
+  .card-text {
+    line-height: 1.6; /* Improved readability */
+    color: #e0e0e0; /* Slightly lighter text for body */
+    margin-top: 15px; /* Space above text */
+  }
+
+  .author-section,
+  .likes-section,
+  .social-share,
+  .categories-section {
+    padding: 15px; /* Padding for sections */
+    border-top: 1px solid #444; /* Subtle separation */
+    margin-top: 15px; /* Space above sections */
+  }
+
+  .author-link {
+    color: #28a745; /* Color for author link */
+    text-decoration: none; /* No underline */
+    transition: color 0.2s; /* Smooth transition for color */
+  }
+
+  .author-link:hover {
+    text-decoration: underline; /* Underline on hover */
+    color: #fff; /* Change color on hover */
+  }
+
+  .published-text {
+    color: #bbb; /* Light gray for published date */
+  }
+
+  .categories-section {
+    color: #f8f9fa; /* Light text for categories */
+  }
+
+  .btn-outline-light {
+    border-radius: 20px; /* Rounded buttons */
+    margin-right: 10px; /* Spacing between buttons */
+    transition: background-color 0.2s; /* Smooth transition for buttons */
+  }
+
+  .btn-outline-light:hover,
+  .btn-outline-primary:hover,
+  .btn-outline-info:hover,
+  .btn-outline-secondary:hover {
+    background-color: #bb86fc; /* Light purple on hover */
+    color: #ffffff; /* White text on hover */
+  }
+
+  .likes-section {
+    margin-top: 20px; /* Space above likes section */
+  }
+
+  /* Comments Section */
+  .comments-section {
+    margin-top: 40px; /* Space above comments */
+  }
+
+  .comment {
+    background-color: #2c2c2c; /* Dark background for comments */
+    border-radius: 10px; /* Rounded corners for comments */
+    padding: 15px; /* Padding for comments */
+    margin-bottom: 15px; /* Space between comments */
+  }
+
+  .comment strong a {
+    color: #bb86fc; /* Light purple for commenter links */
+  }
+
+  /* Form Styles */
+  form {
+    margin-top: 20px; /* Space above form */
+  }
+
+  .form-control {
+    background-color: #343a40; /* Dark background for form controls */
+    color: #ffffff; /* Light text for form controls */
+  }
+
+  .form-control::placeholder {
+    color: #bbb; /* Placeholder color */
+  }
+
+  .btn-primary {
+    background-color: #bb86fc; /* Primary button color */
+    border: none; /* Remove border */
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 767px) {
     .container {
-        padding: 30px; /* Padding for the container */
+      padding: 15px; /* Reduce padding for smaller screens */
     }
 
     .card {
-        background-color: #343a40; /* Dark card background */
-        border: none; /* Remove default border */
-        border-radius: 15px; /* Rounded corners */
-        position: relative; /* Position relative for outline */
-        overflow: hidden; /* Prevent overflow */
-        transition: transform 0.2s, box-shadow 0.3s; /* Smooth scale effect and shadow transition */
-        box-shadow: 0 0 0 4px transparent; /* Initial transparent outline */
-        padding: 20px; /* Padding inside the card */
-    }
-
-    .card:hover {
-        transform: translateY(-5px); /* Lift effect on hover */
-        box-shadow: 0 0 0 4px rgba(187, 134, 252, 1); /* Colorful outline on hover */
-    }
-
-    .animated-card {
-        animation: fadeInUp 0.6s ease-in-out; /* Fade-in animation */
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+      padding: 15px; /* Reduce padding inside the card */
     }
 
     .card-title {
-        margin-top: 20px; /* Space above title */
-        color: #bb86fc; /* Light purple for title */
+      font-size: 1.8rem; /* Slightly smaller title */
     }
 
     .card-text {
-        line-height: 1.6; /* Improved readability */
-        color: #e0e0e0; /* Slightly lighter text for body */
-        margin-top: 15px; /* Space above text */
+      font-size: 1rem; /* Adjust font size for readability */
     }
 
-    .author-section, .likes-section, .social-share, .categories-section {
-        padding: 15px; /* Padding for sections */
-        border-top: 1px solid #444; /* Subtle separation */
-        margin-top: 15px; /* Space above sections */
-    }
-
-    .author-link {
-        color: #28a745; /* Color for author link */
-        text-decoration: none; /* No underline */
-        transition: color 0.2s; /* Smooth transition for color */
-    }
-
-    .author-link:hover {
-        text-decoration: underline; /* Underline on hover */
-        color: #fff; /* Change color on hover */
-    }
-
-    .published-text {
-        color: #bbb; /* Light gray for published date */
-    }
-
+    .author-section,
+    .likes-section,
+    .social-share,
     .categories-section {
-        color: #f8f9fa; /* Light text for categories */
+      padding: 10px; /* Less padding for smaller screens */
     }
 
     .btn-outline-light {
-        border-radius: 20px; /* Rounded buttons */
-        margin-right: 10px; /* Spacing between buttons */
-        transition: background-color 0.2s; /* Smooth transition for buttons */
+      font-size: 0.9rem; /* Smaller button text */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-title {
+      font-size: 1.5rem; /* Smaller title for very small screens */
     }
 
-    .btn-outline-light:hover, 
-    .btn-outline-primary:hover, 
-    .btn-outline-info:hover, 
-    .btn-outline-secondary:hover {
-        background-color: #bb86fc; /* Light purple on hover */
-        color: #ffffff; /* White text on hover */
+    .card-text {
+      font-size: 0.9rem; /* Smaller text for better readability */
     }
 
-    .likes-section {
-        margin-top: 20px; /* Space above likes section */
+    .author-section,
+    .likes-section,
+    .social-share,
+    .categories-section {
+      padding: 5px; /* Minimal padding */
     }
 
-    /* Comments Section */
-    .comments-section {
-        margin-top: 40px; /* Space above comments */
+    .btn-outline-light {
+      font-size: 0.8rem; /* Even smaller buttons */
     }
 
-    .comment {
-        background-color: #2c2c2c; /* Dark background for comments */
-        border-radius: 10px; /* Rounded corners for comments */
-        padding: 15px; /* Padding for comments */
-        margin-bottom: 15px; /* Space between comments */
-    }
+  }
+..reply-form {
+  display: inline-block;
+  max-width: 180px; /* Much smaller width for a more compact form */
+  margin: 15px auto; /* Centered with spacing */
+  padding: 8px 10px; /* Less padding for a smaller form */
+  border-radius: 20px; /* Rounded corners for a bubble effect */
+  background-color: #f3f3f3; /* Light gray background */
+  border: 1px solid #d1d1d1; /* Subtle border */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  animation: slideIn 0.4s ease-out; /* Smooth animation */
+}
 
-    .comment strong a {
-        color: #bb86fc; /* Light purple for commenter links */
-    }
+.reply-form form {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+ 
 
-    /* Form Styles */
-    form {
-        margin-top: 20px; /* Space above form */
-    }
+  gap: 4px; /* Smaller gap between fields */
+}
 
-    .form-control {
-        background-color: #343a40; /* Dark background for form controls */
-        color: #ffffff; /* Light text for form controls */
-    }
+.reply-form input[type="text"],
+.reply-form textarea {
+  width: 100%; /* For text input, make it fill the width of the container */
+  max-width: 220px; /* Set a maximum width for both input and textarea */
+  border: 1px solid #ccc; /* Light border around inputs */
+  border-radius: 30px; /* More rounded edges for bubble-like appearance */
+  padding: 10px 15px; /* Slightly larger padding for a better user experience */
+  font-size: 14px; /* Slightly larger font size for clarity */
+  background-color: #222; /* Dark background for a modern look */
+  outline: none;
+  color: white; /* White text on dark background */
+  resize: none; /* Prevent resizing of text area */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  animation: bubbleEffect 0.5s ease-out; /* Bubble animation when focused */
+}
 
-    .form-control::placeholder {
-        color: #bbb; /* Placeholder color */
-    }
+/* Make the textarea smaller */
+.reply-form textarea {
+  height: 80px; /* Adjust height for a smaller textarea */
+}
 
-    .btn-primary {
-        background-color: #bb86fc; /* Primary button color */
-        border: none; /* Remove border */
-    }
+/* Animation for the bubble effect */
+@keyframes bubbleEffect {
+  from {
+    transform: scale(0.9); /* Start with a smaller size */
+    opacity: 0.8; /* Slight opacity */
+  }
+  to {
+    transform: scale(1.05); /* Expand slightly to create a bubble effect */
+    opacity: 1; /* Full opacity */
+  }
+}
+
+.reply-form input[type="text"]:focus,
+.reply-form textarea:focus {
+  border-color: #88d9f9; /* Soft blue border when focused */
+  box-shadow: 0 0 8px rgba(136, 217, 249, 0.6); /* Soft blue glow around the input */
+  transform: scale(1.05); /* Slightly enlarge the input on focus for bubble effect */
+}
+
+.reply-form input[type="text"]:hover,
+.reply-form textarea:hover {
+  border-color: #6bb9ff; /* Light blue border on hover */
+  box-shadow: 0 0 6px rgba(136, 217, 249, 0.5); /* Subtle glow on hover */
+}
+
+.reply-form input[type="text"]:focus,
+.reply-form textarea:focus {
+  border-color: #88d9f9; /* Soft blue border on focus */
+  box-shadow: 0 0 5px rgba(136, 217, 249, 0.5); /* Soft glow around focus */
+}
+
+.reply-form button {
+  align-self: flex-end; /* Position button to the right */
+  background-color: #6bb9ff; /* Light blue for the button */
+  color: #fff; /* White text */
+  border: none;
+  border-radius: 20px; /* Rounded button */
+  padding: 6px 12px; /* Small and compact button size */
+  font-size: 12px; /* Small text size */
+  font-weight: bold; /* Bold text */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.reply-form button:hover {
+  background-color: #5a99d6; /* Slightly darker blue on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+}
+
+.reply-form button:active {
+  transform: scale(0.98); /* Button shrink effect when clicked */
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up effect */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Final position */
+  }
+}
+/* Styling for Heading */
+.comment-heading {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff; /* White text for heading */
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  text-align: left; /* Align the heading to the left */
+}
+
+/* Form Container */
+.comment-form {
+  background-color: #212121; /* Dark background */
+  padding: 15px 25px; /* Compact padding */
+  border-radius: 8px;
+  max-width: 350px; /* Smaller form size */
+  margin-left: 0; /* Align form to the left */
+  margin-top: 20px; /* Space at the top */
+  animation: formSlideIn 0.5s ease-out; /* Slide-in animation */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+/* Form Fields Styling */
+.comment-form .form-control {
+  background-color: #333; /* Dark background for inputs */
+  color: #fff; /* White text color */
+  border: 1px solid #555; /* Soft border */
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 14px;
+  margin-bottom: 12px; /* Space between fields */
+  transition: all 0.3s ease;
+  width: 100%; /* Full width for input fields */
+}
+
+.comment-form .form-control::placeholder {
+  color: #aaa; /* Lighter placeholder text */
+}
+
+.comment-form .form-control:focus {
+  border-color: #6bb9ff; /* Highlighted border on focus */
+  box-shadow: 0 0 5px rgba(107, 185, 255, 0.7); /* Soft blue glow */
+}
+
+/* Submit Button Styling */
+.submit-btn {
+  background-color: #6bb9ff; /* Blue background */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: auto; /* Adjust width to fit content */
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #5a99d6; /* Darker blue on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.submit-btn:active {
+  background-color: #4a88b0; /* Even darker on click */
+  transform: scale(0.98); /* Shrink effect */
+}
+
+/* Success Alert Styling */
+.comment-alert {
+  background-color: #28a745; /* Green background */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 16px;
+  text-align: left; /* Align the success message to the left */
+  animation: fadeInAlert 1s ease-out; /* Fade-in animation for success message */
+}
+
+/* Animations */
+@keyframes formSlideIn {
+  from {
+    transform: translateY(-20px); /* Start from above */
+    opacity: 0; /* Fade in */
+  }
+  to {
+    transform: translateY(0); /* Final position */
+    opacity: 1; /* Fully visible */
+  }
+}
+
+@keyframes fadeInAlert {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+  
 </style>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <!-- Blog Card -->
-            <div class="card shadow-sm animated-card">
-                <!-- Blog Title -->
-                <h1 class="card-title">{{ blog.title }}</h1>
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <!-- Blog Card -->
+      <div class="card shadow-sm animated-card">
+        <!-- Blog Title -->
+        <h1 class="card-title">{{ blog.title }}</h1>
 
-                <!-- Author Section -->
-                <div class="author-section mb-3">
-                    <p>
-                        <strong>
-                            <a href="{% url 'author_profile' blog.author.id %}" class="author-link btn btn-sm btn-light">{{ blog.author.username }}</a>
-                        </strong>
-                        <em class="published-text">Published on {{ blog.timestamp|date:"F j, Y" }}</em>
-                    </p>
-                </div>
-
-                <!-- Categories Section -->
-                <div class="categories-section mb-3">
-                    <strong>Categories:</strong>
-                    <ul class="list-inline">
-                        {% for category in blog.categories.all %}
-                            <li class="list-inline-item">
-                                <a href="{% url 'category_view' category.slug %}" class="btn btn-outline-secondary btn-sm">{{ category.name }}</a>
-                            </li>
-                        {% empty %}
-                            <li class="list-inline-item">No categories assigned.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Blog Content -->
-                <div class="card-body">
-                    <p class="card-text">{{ blog.body_content|safe }}</p>
-
-                    <!-- Likes Section -->
-                    <div class="likes-section">
-                        <button id="like-button" class="btn btn-outline-light" data-blog-id="{{ blog.id }}">
-                            {% if is_liked %}Unlike{% else %}Like{% endif %}
-                        </button>
-                        <p id="total-likes" class="text-info">Likes: {{ blog.likes.count }}</p>
-                    </div>
-
-                    <!-- Social Media Share Links -->
-                    <div class="social-share">
-                        <p class="text-light">Share this post:</p>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="btn btn-outline-primary" target="_blank">
-                            <i class="fab fa-facebook-f"></i> Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ blog.title }}" class="btn btn-outline-info" target="_blank">
-                            <i class="fab fa-twitter"></i> Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ blog.title }}" class="btn btn-outline-secondary" target="_blank">
-                            <i class="fab fa-linkedin-in"></i> LinkedIn
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Comments Section -->
-            <div class="comments-section mt-4">
-                <h3>Comments</h3>
-                <div id="comments">
-                    {% for comment in comments %}
-                        <div class="comment mb-2">
-                            <p>
-                                <strong>
-                                    <i class="fas fa-user" style="margin-right: 5px;"></i>
-                                    <a href="{% url 'author_profile' comment.author.id %}">{{ comment.author.username }}</a>
-                                </strong>
-                                <em>{{ comment.timestamp|date:"F j, Y, g:i A" }}</em>
-                            </p>
-                            <p>{{ comment.content }}</p>
-                        </div>
-                    {% empty %}
-                        <p>No comments yet.</p>
-                    {% endfor %}
-                </div>
-
-                <h4>Add a Comment:</h4>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ comment_form.as_p }}
-                    <button type="submit" class="btn btn-primary">Post Comment</button>
-                </form>
-            </div>
+        <!-- Author Section -->
+        <div class="author-section mb-3">
+          <p>
+            <strong>
+              <a
+                href="{% url 'author_profile' blog.author.id %}"
+                class="author-link btn btn-sm btn-light"
+                >{{ blog.author.username }}</a
+              >
+            </strong>
+            <em class="published-text"
+              >Published on {{ blog.timestamp|date:"F j, Y" }}</em
+            >
+          </p>
         </div>
+
+        <!-- Categories Section -->
+        <div class="categories-section mb-3">
+          <strong>Categories:</strong>
+          <ul class="list-inline">
+            {% for category in blog.categories.all %}
+            <li class="list-inline-item">
+              <a
+                href="{% url 'category_view' category.slug %}"
+                class="btn btn-outline-secondary btn-sm"
+                >{{ category.name }}</a
+              >
+            </li>
+            {% empty %}
+            <li class="list-inline-item">No categories assigned.</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Blog Content -->
+        <div class="card-body">
+          <p class="card-text">{{ blog.body_content|safe }}</p>
+
+          <!-- Likes Section -->
+          <div class="likes-section">
+            <button
+              id="like-button"
+              class="btn btn-outline-light"
+              data-blog-id="{{ blog.id }}"
+            >
+              {% if is_liked %}Unlike{% else %}Like{% endif %}
+            </button>
+            <p id="total-likes" class="text-info">
+              Likes: {{ blog.likes.count }}
+            </p>
+          </div>
+
+          <!-- Social Media Share Links -->
+          <div class="social-share">
+            <p class="text-light">Share this post:</p>
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+              class="btn btn-outline-primary"
+              target="_blank"
+            >
+              <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+            <a
+              href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ blog.title }}"
+              class="btn btn-outline-info"
+              target="_blank"
+            >
+              <i class="fab fa-twitter"></i> Twitter
+            </a>
+            <a
+              href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ blog.title }}"
+              class="btn btn-outline-secondary"
+              target="_blank"
+            >
+              <i class="fab fa-linkedin-in"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+<!-- Comments Section -->
+<div class="comments-section mt-4">
+  <h3>Comments</h3>
+  <div id="comments">
+    {% for comment in comments %}
+    <div class="comment mb-4">
+      <p>
+        <strong>
+          <i class="fas fa-user" style="margin-right: 5px"></i>
+          <a href="{% url 'author_profile' comment.author.id %}">
+            {{ comment.author.username }}
+          </a>
+        </strong>
+        <em>{{ comment.timestamp|date:"F j, Y, g:i A" }}</em>
+      </p>
+      <p>{{ comment.content }}</p>
+      
+      <!-- Replies Section -->
+      <div class="replies ml-4 mt-2">
+        {% for reply in comment.replies.all %}
+        <div class="reply mb-2">
+          <p>
+            <strong>
+              <i class="fas fa-reply" style="margin-right: 5px"></i>
+              <a href="{% url 'author_profile' reply.author.id %}">
+                {{ reply.author.username }}
+              </a>
+            </strong>
+            <em>{{ reply.timestamp|date:"F j, Y, g:i A" }}</em>
+          </p>
+          <p>{{ reply.content }}</p>
+        </div>
+        {% empty %}
+        <p>No replies yet.</p>
+        {% endfor %}
+      </div>
+      <hr>
+
+      <!-- Reply Form -->
+      {% if user.is_authenticated %}
+      <div class="reply-form">
+      <form method="post" class="mt-2">
+        {% csrf_token %}
+        {{ reply_form.as_p }}
+        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+        <button type="submit" name="reply_form" class="btn-primary btn-sm">
+          Reply
+        </button>
+      </form>
+      {% endif %}
     </div>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+  </div>
+  <hr>
+
+ <h4 class="comment-heading">Add a Comment:</h4>
+<form method="post" class="comment-form">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <button type="submit" name="comment_form" class="btn submit-btn">
+    Post Comment
+  </button>
+</form>
+
+{% if messages %}
+<div class="alert comment-alert">
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
 </div>
+{% endif %}
+
+
+</div>
+
+
 
 <!-- AJAX for liking/unliking a blog post -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const likeButton = document.getElementById('like-button');
+  document.addEventListener("DOMContentLoaded", function () {
+    const likeButton = document.getElementById("like-button");
 
-        likeButton.addEventListener('click', function() {
-            const blogId = this.dataset.blogId;
+    likeButton.addEventListener("click", function () {
+      const blogId = this.dataset.blogId;
 
-            fetch(`/like/${blogId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),  // Ensure you handle CSRF tokens
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.is_liked) {
-                    this.innerText = "Unlike";  // Update button text or state
-                } else {
-                    this.innerText = "Like";
-                }
-                document.getElementById('total-likes').innerText = `Likes: ${data.total_likes}`;
-            });
+      fetch(`/like/${blogId}/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"), // Ensure you handle CSRF tokens
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.is_liked) {
+            this.innerText = "Unlike"; // Update button text or state
+          } else {
+            this.innerText = "Like";
+          }
+          document.getElementById(
+            "total-likes"
+          ).innerText = `Likes: ${data.total_likes}`;
         });
     });
+  });
 
-    // Function to get CSRF token from cookies
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+  // Function to get CSRF token from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-        return cookieValue;
+      }
     }
+    return cookieValue;
+  }
 </script>
+
 {% endblock %}

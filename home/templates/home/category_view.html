@@ -5,65 +5,84 @@
     body {
         background-color: #121212; /* Dark background for the body */
         color: #ffffff; /* Light text color */
+        font-family: 'Arial', sans-serif; /* Cleaner font style */
     }
 
     h1, h5 {
         color: #bb86fc; /* Purple color for headings */
+        font-weight: 600; /* Slightly bolder headings */
     }
 
     .container {
-        padding: 30px; /* Spacing around the container */
+        padding: 50px 30px; /* More spacious container */
+        max-width: 1200px; /* Limiting max-width for better readability */
     }
 
     .card {
         border: 2px solid transparent; /* Initial transparent border for animation */
-        transition: border-color 0.3s ease; /* Smooth border color transition */
+        transition: border-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
         overflow: hidden; /* Prevent content overflow */
-        border-radius: 10px; /* Rounded corners */
+        border-radius: 15px; /* Rounded corners for a softer look */
         height: 100%; /* Ensure consistent height */
+        background-color: #1f1f1f; /* Dark background for cards */
     }
 
     .card:hover {
         border-color: #bb86fc; /* Purple border on hover */
-        transform: translateY(-5px); /* Slight lift effect on hover */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+        transform: translateY(-10px); /* Slight lift effect on hover */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow effect on hover */
     }
 
     .card-img-top {
-        height: 200px; /* Set a fixed height for images */
+        height: 250px; /* Slightly larger images */
         object-fit: cover; /* Maintain aspect ratio */
+        transition: transform 0.3s ease; /* Smooth zoom effect */
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05); /* Subtle zoom effect on hover */
+    }
+
+    .card-body {
+        color: #ffffff; /* White text color for card content */
     }
 
     .btn-outline-light {
-        border: 1px solid #bb86fc; /* Light purple border */
+        border: 2px solid #bb86fc; /* Light purple border */
         color: #bb86fc; /* Light purple text */
+        font-weight: 500;
     }
 
     .btn-outline-light:hover {
         background-color: #bb86fc; /* Light purple background on hover */
         color: #ffffff; /* White text on hover */
+        border-color: #bb86fc; /* Keep border color consistent */
     }
 
-    /* Additional styling for responsiveness */
+    .row {
+        margin-top: 30px; /* Space between cards */
+    }
+
+    /* Responsive adjustments */
     @media (max-width: 768px) {
         .container {
             padding: 20px; /* Less padding on smaller screens */
         }
 
         .card-img-top {
-            height: 150px; /* Smaller height for images on small screens */
+            height: 180px; /* Smaller height for images on small screens */
         }
     }
 </style>
 
 <div class="container py-5">
-    <h1 class="text-light">Blogs in {{ category.name }}</h1>
-    
+    <h1 class="text-light mb-4">Blogs in {{ category.name }}</h1>
+
     {% if blogs %}
         <div class="row">
             {% for blog in blogs %}
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm bg-dark text-white">
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
                         <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ blog.title }}</h5>

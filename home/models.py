@@ -77,3 +77,14 @@ class Like(models.Model):
     def __str__(self):
         return f'{self.user.username} likes {self.blog.title}'
     
+class Reply(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Reply by {self.author} on {self.comment.blog.title}'
+
+
+    

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Blog, Comment, Category, Tag, Like, AuthorProfile
-from .forms import BlogForm, CommentForm  # Assuming you've added a CommentForm for comment handling
+from .forms import BlogForm, CommentForm ,ReplyForm # Assuming you've added a CommentForm for comment handling
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -18,7 +18,7 @@ def home(request):
     return render(request, 'home/index.html', {'blogs': blogs, 'categories': categories})
 
 # List all blogs view
-
+@login_required
 def blogs_list(request):
     blogs = Blog.objects.all()
     categories = Category.objects.all()
@@ -26,14 +26,15 @@ def blogs_list(request):
     return render(request, 'home/blogs.html', {'blogs': blogs, 'categories': categories, 'tags': tags})
 
 # Blog detail view with comments, likes, and related tags
+@login_required
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug)
     comments = Comment.objects.filter(blog=blog).order_by('-timestamp')
-    tags = blog.tags.all()  # Fetching tags associated with the blog
-    is_liked = blog.likes.filter(user=request.user).exists() if request.user.is_authenticated else False
+    tags = blog.tags.all()
+    is_liked = blog.likes.filter(user=request.user).exists()
 
     # Handle new comment submission
-    if request.method == 'POST':
+    if request.method == 'POST' and 'comment_form' in request.POST:
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
@@ -42,16 +43,31 @@ def blog_detail(request, slug):
             new_comment.save()
             messages.success(request, 'Your comment has been posted.')
             return redirect('blog_detail', slug=blog.slug)
-    else:
-        comment_form = CommentForm()
+
+    # Handle new reply submission
+    if request.method == 'POST' and 'reply_form' in request.POST:
+        reply_form = ReplyForm(request.POST)
+        if reply_form.is_valid():
+            new_reply = reply_form.save(commit=False)
+            new_reply.comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
+            new_reply.author = request.user
+            new_reply.save()
+            messages.success(request, 'Your reply has been posted.')
+            return redirect('blog_detail', slug=blog.slug)
+
+    # Initialize forms
+    comment_form = CommentForm()
+    reply_form = ReplyForm()
 
     return render(request, 'home/blog_detail.html', {
         'blog': blog,
         'comments': comments,
         'comment_form': comment_form,
+        'reply_form': reply_form,
         'tags': tags,
         'is_liked': is_liked,
     })
+
 
 # Create blog view
 @login_required
@@ -59,17 +75,16 @@ def create_blog(request):
     if request.method == 'POST':
         form = BlogForm(request.POST, request.FILES)
         if form.is_valid():
-            blog = form.save(commit=False)  # Create the blog instance but don't save yet
-            blog.author = request.user  # Assign the current user as the author
-            blog.save()  # Save the blog instance
-            form.save_m2m()  # Save the many-to-many relationships
+            blog = form.save(commit=False)
+            blog.author = request.user
+            blog.save()
+            form.save_m2m()
             messages.success(request, 'Blog created successfully!')
-            return redirect('home')  # Redirect to a relevant page
+            return redirect('home')
     else:
         form = BlogForm()
 
     return render(request, 'home/create_blog.html', {'form': form})
-
 
 # Register view with additional profile information
 def register(request):
@@ -114,11 +129,11 @@ def logout_view(request):
 # User profile view
 @login_required
 def user_profile(request):
-    author_profile = get_object_or_404(AuthorProfile, user=request.user)  # Use a consistent variable name
+    author_profile = get_object_or_404(AuthorProfile, user=request.user)
     user_blogs = Blog.objects.filter(author=request.user)
-    
+
     return render(request, 'home/user_profile.html', {
-        'author_profile': author_profile,  # Pass as author_profile to match your template
+        'author_profile': author_profile,
         'user_blogs': user_blogs,
     })
 
@@ -127,36 +142,33 @@ def user_profile(request):
 def like_blog(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id)
     like, created = Like.objects.get_or_create(blog=blog, user=request.user)
-    
+
     if not created:
-        like.delete()  # Unlike if already liked
+        like.delete()
         is_liked = False
     else:
         is_liked = True
 
     return JsonResponse({'is_liked': is_liked, 'total_likes': blog.likes.count()})
 
+# Author profile view using DetailView
 class AuthorProfileView(DetailView):
-    model = User  # or your Author model
+    model = User
     template_name = 'home/author_profile.html'
     context_object_name = 'author'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get the author profile related to the author
         context['profile'] = get_object_or_404(AuthorProfile, user=self.object)
         return context
-    
-    
 
+# Category view to display blogs by category
 def category_view(request, category_slug):
-    # Use slug to find the category instead of id
     category = get_object_or_404(Category, slug=category_slug)
-    # Filter blogs by the selected category
     blogs = Blog.objects.filter(categories=category)
     return render(request, 'home/category_view.html', {'category': category, 'blogs': blogs})
 
-
+# Update author profile view
 @login_required
 def update_author_profile(request):
     author_profile = get_object_or_404(AuthorProfile, user=request.user)
@@ -164,8 +176,7 @@ def update_author_profile(request):
         form = AuthorProfileUpdateForm(request.POST, request.FILES, instance=author_profile)
         if form.is_valid():
             form.save()
-            return redirect('user_profile')  # Redirect to the profile page or wherever you want
+            return redirect('user_profile')
     else:
         form = AuthorProfileUpdateForm(instance=author_profile)
     return render(request, 'home/update_author_profile.html', {'form': form})
-

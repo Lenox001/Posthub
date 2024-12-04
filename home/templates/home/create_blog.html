@@ -5,58 +5,91 @@
 {% block content %}
 <style>
     body {
-        background-color: #121212;
-        color: #f0f0f0;
-        font-family: 'Poppins', sans-serif;
+        background-color: #121212; /* Dark background */
+        color: #f0f0f0; /* Light text color for contrast */
+        font-family: 'Poppins', sans-serif; /* Modern font */
+        margin: 0;
+        padding: 0;
     }
+
     .container {
-        padding-top: 20px;
+        padding-top: 40px;
         animation: fadeIn 1.5s ease-in-out;
         max-width: 600px;
-        margin: auto;
+        margin: 0 auto;
+        background-color: #1e1e1e; /* Darker container for contrast */
+        padding: 30px;
+        border-radius: 8px; /* Rounded corners for the container */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Soft shadow */
     }
+
     h2 {
-        color: #ffd700;
+        color: #ffd700; /* Golden yellow for headings */
         text-align: center;
+        margin-bottom: 30px;
+        font-weight: 700;
     }
+
+    /* Form controls styling */
     .form-control, .form-control-file {
-        background-color: #2c2c2c;
+        background-color: #2c2c2c; /* Dark input fields */
         border: 1px solid #444;
         color: #ffffff;
         width: 100%;
         max-width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
+        padding: 12px;
+        margin-bottom: 20px;
         border-radius: 5px;
-        transition: border-color 0.3s;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
-    .form-control:focus {
-        border-color: #ffd700;
+
+    .form-control:focus, .form-control-file:focus {
+        border-color: #ffd700; /* Golden border on focus */
         outline: none;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Golden glow effect */
     }
+
+    /* Button styling */
     .btn-primary {
-        background-color: #ffd700;
+        background-color: #ffd700; /* Golden button */
         border-color: #ffd700;
+        color: #121212; /* Dark text on light background */
         font-weight: bold;
         width: auto;
-        padding: 10px 20px;
+        padding: 12px 20px;
         border-radius: 5px;
-        margin-top: 10px;
-        transition: background-color 0.3s, transform 0.3s;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
     }
+
     .btn-primary:hover {
-        background-color: #ffc107;
+        background-color: #ffc107; /* Lighter yellow on hover */
         border-color: #ffc107;
-        transform: scale(1.05);
+        transform: scale(1.05); /* Slightly enlarge on hover */
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3); /* Soft shadow on hover */
     }
+
+    /* Alert styling */
     .alert {
         animation: fadeIn 0.5s ease-in-out;
         margin-bottom: 20px;
     }
+
+    /* Keyframe for fade-in animation */
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+        }
+    }
+
 </style>
 
 <div class="container">
@@ -68,28 +101,33 @@
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.non_field_errors }}
+        
         <div class="form-group">
-            {{ form.title.label }} 
-            {{ form.title }} 
+            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+            {{ form.title }}
             {{ form.title.errors }}
         </div>
+
         <div class="form-group">
-            {{ form.body_content.label }} 
-            {{ form.body_content }} 
+            <label for="{{ form.body_content.id_for_label }}">{{ form.body_content.label }}</label>
+            {{ form.body_content }}
             {{ form.body_content.errors }}
         </div>
+
         <div class="form-group">
-            {{ form.banner.label }} 
-            {{ form.banner }} 
+            <label for="{{ form.banner.id_for_label }}">{{ form.banner.label }}</label>
+            {{ form.banner }}
             {{ form.banner.errors }}
         </div>
+
         <div class="form-group">
-            {{ form.categories.label }} 
-            {{ form.categories }} 
-            {{ form.categories.errors }} 
+            <label for="{{ form.categories.id_for_label }}">{{ form.categories.label }}</label>
+            {{ form.categories }}
+            {{ form.categories.errors }}
         </div>
+
         <button type="submit" class="btn btn-primary mb-5">Submit</button>
     </form>
 </div>
+
 {% endblock %}

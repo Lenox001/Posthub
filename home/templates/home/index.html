@@ -3,13 +3,20 @@
 {% block content %}
 <div class="container-fluid p-0">
     <!-- Hero Section -->
-    <div class="hero-section d-flex align-items-center justify-content-center text-center" style="background-image: url('https://source.unsplash.com/1600x900/?blog,writing'); height: 50vh; background-size: cover; background-position: center; animation: fadeIn 2s ease-in-out; border: 2px solid #ffd700; border-radius: 20px;">
-        <div class="overlay" style="background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; position: absolute; border-radius: 20px;"></div>
-        <div class="container position-relative">
-            <h1 class="display-3 text-white mb-4" style="font-weight: 700;">
+    <div class="hero-section d-flex align-items-center justify-content-center text-center" style="background-image: url('https://source.unsplash.com/1600x900/?blog,writing'); height: 60vh; background-size: cover; background-position: center; animation: fadeIn 2s ease-in-out; border: 2px solid #ffd700; border-radius: 20px;">
+        <div class="overlay" style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; position: absolute; border-radius: 20px;"></div>
+        
+        <!-- Floating Objects -->
+        <div class="floating-object" style="background-color: #ff6347;"></div>
+        <div class="floating-object" style="background-color: #ffa500;"></div>
+        <div class="floating-object" style="background-color: #4682b4;"></div>
+        <div class="floating-object" style="background-color: #32cd32;"></div>
+
+        <div class="container position-relative z-index-10">
+            <h1 class="display-3 text-white mb-4" style="font-weight: 700; font-family: 'Georgia', serif;">
                 Welcome to PostHub
             </h1>
-            <p class="lead text-white mb-5">Discover engaging stories and share your voice with the world.</p>
+            <p class="lead text-white mb-5" style="font-family: 'Arial', sans-serif;">Discover engaging stories and share your voice with the world.</p>
             <a href="{% url 'blogs' %}" class="btn btn-lg btn-primary">
                 <i class="fas fa-blog"></i> Explore Blogs
             </a>
@@ -19,20 +26,20 @@
     <!-- Features Section -->
     <div class="container py-5">
         <div class="row text-center">
-            <h2 class="mb-5">Why PostHub?</h2>
+            <h2 class="mb-5" style="font-family: 'Georgia', serif;">Why PostHub?</h2>
             <div class="col-md-4 mb-4">
                 <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
-                <a href="{% url "create_blog" %}"  style="text-decoration:none;"><h4>Create Blogs</h4></a>
+                <a href="{% url "create_blog" %}" style="text-decoration:none;"><h4>Create Blogs</h4></a>
                 <p>Share your stories, ideas, and experiences with an engaged audience in just a few clicks.</p>
             </div>
             <div class="col-md-4 mb-4">
                 <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                <a href="{% url "blogs" %}"style="text-decoration:none;"><h4>Engage with Readers</h4></a>
+                <a href="{% url "blogs" %}" style="text-decoration:none;"><h4>Engage with Readers</h4></a>
                 <p>Receive feedback, engage in meaningful discussions, and build a community around your posts.</p>
             </div>
             <div class="col-md-4 mb-4">
                 <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
-                <a href="{% url "user_profile" %}"style="text-decoration:none;"><h4>Track Your Success</h4></a>
+                <a href="{% url "user_profile" %}" style="text-decoration:none;"><h4>Track Your Success</h4></a>
                 <p>Monitor the performance of your blogs, understand your audience, and grow your influence.</p>
             </div>
         </div>
@@ -40,11 +47,11 @@
 
     <!-- Blog Highlights Section -->
     <div class="container py-5">
-        <h2 class="text-center mb-5">Latest Blogs</h2>
+        <h2 class="text-center mb-5" style="font-family: 'Georgia', serif;">Latest Blogs</h2>
 
         <!-- Category Filter -->
         <div class="text-center mb-4">
-            <h5>Filter by Category:</h5>
+            <h5 style="font-family: 'Arial', sans-serif;">Filter by Category:</h5>
             <div class="d-flex flex-wrap justify-content-center" role="group" aria-label="Category filter">
                 {% for category in categories %}
                     <a href="{% url 'category_view' category.slug %}" class="btn btn-outline-primary m-1">
@@ -57,16 +64,16 @@
         </div>
 
         <div class="row">
-            {% for blog in blogs|slice:":3" %}  {# Limit to 3 latest blogs #}
+            {% for blog in blogs|slice:":3" %}
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm" style="background-color: #343a40; border: 2px solid #ffd700; border-radius: 20px;">
-                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="height: 200px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="height: 250px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px;">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">{{ blog.title }}</h5>
-                        <p class="card-text text-white">{{ blog.body_content|slice:":100" }}...</p>
+                        <h5 class="card-title text-primary" style="font-family: 'Georgia', serif;">{{ blog.title }}</h5>
+                        <p class="card-text text-dark">{{ blog.body_content|slice:":100" }}...</p>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-outline-light">
+                        <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-outline-dark">
                             <i class="fas fa-book-open"></i> Read More
                         </a>
                     </div>
@@ -75,8 +82,6 @@
             {% endfor %}
         </div>
     </div>
-
-   
 </div>
 
 <!-- CSS Animations and Custom Styles -->
@@ -96,40 +101,7 @@
         }
     }
 
-    .card {
-        height: 100%; /* Ensures all cards are the same height */
-    }
-
-    .card:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .card-footer .btn-outline-light {
-        transition: background-color 0.3s ease-in-out;
-    }
-
-    .card-footer .btn-outline-light:hover {
-        background-color: #ffd700;
-    }
-
-    /* Custom button styles for category filter */
-    .btn-group .btn {
-        border-radius: 20px;
-    }
-
-    .btn-outline-primary:hover {
-        background-color: #007bff; /* Change as needed */
-        color: white;
-    }
-
     /* Floating Objects Styles */
-    .floating-objects {
-        position: relative;
-        overflow: hidden;
-        height: 100vh; /* Full height for floating effect */
-    }
-
     .floating-object {
         position: absolute;
         width: 50px;
@@ -151,7 +123,6 @@
         }
     }
 
-    /* Floating Object Random Positions */
     .floating-object:nth-child(1) {
         top: 20%;
         left: 10%;
@@ -170,22 +141,33 @@
         animation-delay: 4s;
     }
 
+    .floating-object:nth-child(4) {
+        top: 30%;
+        left: 50%;
+        animation-delay: 1s;
+    }
+
     /* Responsive Styles */
     @media (max-width: 768px) {
         .hero-section {
-            height: 40vh; /* Adjust height for smaller screens */
+            height: 50vh; /* Adjust height for smaller screens */
         }
 
         .display-3 {
-            font-size: 2.5rem; /* Adjust heading size for smaller screens */
+            font-size: 2rem; /* Adjust heading size for smaller screens */
         }
 
         .lead {
-            font-size: 1.25rem; /* Adjust paragraph size for smaller screens */
+            font-size: 1.1rem; /* Adjust paragraph size for smaller screens */
         }
 
         .btn-outline-primary {
             font-size: 0.9rem; /* Adjust button font size for smaller screens */
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
         }
     }
 </style>

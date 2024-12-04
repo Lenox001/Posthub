@@ -5,45 +5,45 @@
 <div class="container py-5">
     <div class="row">
         {% for blog in blogs %}
-        <div class="col-md-6 col-lg-4 mb-4 d-flex ">
-            <div class="card shadow-sm flex-fill" style="animation: fadeInUp 1.2s ease-in-out; background-color: #343a40; border-radius: 10px; display: flex; flex-direction: column; padding: 20px; border: 2px solid transparent; border-image: linear-gradient(to right, #ff5733, #33ff57, #3357ff, #f3ff33, #ff33a1) 1; overflow: hidden;">
+        <div class="col-md-6 col-lg-4 mb-4 d-flex">
+            <div class="card shadow-sm flex-fill" style="animation: fadeInUp 1.2s ease-in-out; background: linear-gradient(145deg, #303841, #3a414a); border-radius: 15px; display: flex; flex-direction: column; padding: 20px; border: none; overflow: hidden;">
                 {% if blog.banner %}
-                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 30px; border-top-right-radius: 30px;">
+                    <img src="{{ blog.banner.url }}" class="card-img-top" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                 {% else %}
-                    <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image" style="max-height: 200px; object-fit: cover; border-top-left-radius: 30px; border-top-right-radius: 30px;">
+                    <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image" style="max-height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                 {% endif %}
                 
-                <div class="card-body d-flex flex-grow-1 flex-column">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title text-primary">
                         <i class="fas fa-heading"></i> {{ blog.title }}
                     </h5>
-                    <p class="card-subtitle mb-2" style="color: #f8f9fa;">
-                        <i class="fas fa-user"></i> Author: {{ blog.author }}
+                    <p class="card-subtitle mb-2 text-white">
+                        <i class="fas fa-user"></i> {{ blog.author }}
                     </p>
-                    <p class="card-text text-white flex-grow-1" style="margin: 0; padding: 10px 0;">
+                    <p class="card-text text-white flex-grow-1">
                         <i class="fas fa-align-left"></i> {{ blog.body_content|slice:":150" }}...
                     </p>
 
                     <!-- Displaying Tags -->
-                    <div class="tags mb-2">
+                    <div class="tags mt-auto mb-2">
                         {% for tag in blog.tags.all %}
-                            <span class="badge badge-info">{{ tag.name }}</span>
+                        <span class="badge bg-gradient text-dark">{{ tag.name }}</span>
                         {% endfor %}
                     </div>
 
-                    <!-- Displaying Comments Count -->
-                    <p class="text-success mb-1" style="margin: 0;">
-                        <i class="fas fa-comments"></i> {{ blog.comments.count }} Comments
-                    </p>
-
-                    <!-- Displaying Likes Count -->
-                    <p class="text-success mb-0" style="margin: 0;">
-                        <i class="fas fa-thumbs-up"></i> {{ blog.likes.count }} Likes
-                    </p>
+                    <!-- Displaying Comments and Likes Count -->
+                    <div class="d-flex justify-content-between text-white-50">
+                        <span>
+                            <i class="fas fa-comments"></i> {{ blog.comments.count }} Comments
+                        </span>
+                        <span>
+                            <i class="fas fa-thumbs-up"></i> {{ blog.likes.count }} Likes
+                        </span>
+                    </div>
                 </div>
 
-                <div class="card-footer text-center">
-                    <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-primary">
+                <div class="card-footer text-center bg-transparent border-0">
+                    <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-primary rounded-pill">
                         <i class="fas fa-book-open"></i> Read More
                     </a>
                 </div>
@@ -66,17 +66,36 @@
     }
 
     .card {
-        transition: transform 0.3s ease;
-        display: flex;
-        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .card:hover {
         transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .tags {
-        margin-top: auto; /* Push tags to the bottom */
+    .card-footer {
+        margin-top: auto;
+    }
+
+    .tags .badge {
+        background: linear-gradient(145deg, #ff7e5f, #feb47b);
+        border-radius: 5px;
+        padding: 0.5em;
+        margin-right: 0.25em;
+        font-size: 0.85em;
+    }
+
+    .btn-primary {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        border: none;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(145deg, #0056b3, #003d80);
+        color: #fff;
     }
 </style>
 {% endblock %}

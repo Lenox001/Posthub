@@ -2,6 +2,7 @@
 
 from django import forms
 from .models import Blog, Comment,Category,AuthorProfile# Import Comment model
+from .models import Reply
 
 
 
@@ -35,3 +36,14 @@ class AuthorProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = AuthorProfile
         fields = ['bio', 'profile_picture']
+        
+
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Reply
+        fields = ['content']  # Include 'content' if needed
+
+    content = forms.CharField(label='Your Reply')  # This changes the label text to 'Your Reply'
+
+
