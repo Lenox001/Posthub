@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+<!-- Link to custom CSS file -->
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+{% block title %}My Diary Admin{% endblock %}
+
+{% block content %}
+    <div class="module">
+        <h1>Welcome to the My Diary Administration</h1>
+        <p>This is the admin interface where you can manage the blog content.</p>
+    </div>
+    {{ block.super }}
+{% endblock %}

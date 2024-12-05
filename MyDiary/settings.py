@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url  # Add this for PostgreSQL configuration on Heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-5(4ue&=(%4b8!qvpq62we
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'posthub-f31489e2d3b4.herokuapp.com','lenoxy.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'posthub-f31489e2d3b4.herokuapp.com','epoxy.pythonanywhere.com']
 SECRET_KEY='totaly3&)8ocn)!nlt1@8pt$a)77(07u0rl$$!q58#mxo6)_bi'
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-fallback-key')
 
@@ -80,7 +79,10 @@ WSGI_APPLICATION = 'MyDiary.wsgi.application'
 # Database
 # Use dj-database-url for PostgreSQL configuration on Heroku
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # Use SQLite as the database engine
+        'NAME': BASE_DIR / 'db.sqlite3',  # Path to the SQLite database file
+    }
 }
 
 
@@ -118,13 +120,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
 
-# WhiteNoise settings for serving static files in production
+# Ensure you have this for development
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# For production (make sure to run collectstatic)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
+# WhiteNoise for serving static files in production (optional)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 # Default primary key field type
