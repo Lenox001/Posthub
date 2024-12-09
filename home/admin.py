@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Category, Tag, Blog, Comment, AuthorProfile, Like, Reply
 from django.contrib.admin import AdminSite
+from django.contrib.admin import AdminSite
+from django.utils.html import format_html
 
 class MyAdminSite(AdminSite):
     site_header = 'My Diary Admin'

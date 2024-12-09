@@ -421,6 +421,15 @@
               >Published on {{ blog.timestamp|date:"F j, Y" }}</em
             >
           </p>
+           <p class="text-success">
+    <i class="fas fa-eye" style="font-size: 1.2em; transition: transform 0.3s;"></i> {{ blog.views_count }} Views
+</p>
+
+<style>
+    .fas.fa-eye:hover {
+        transform: scale(1.1);
+    }
+</style>
         </div>
 
         <!-- Categories Section -->
@@ -457,6 +466,9 @@
             <p id="total-likes" class="text-info">
               Likes: {{ blog.likes.count }}
             </p>
+          
+
+
           </div>
 
           <!-- Social Media Share Links -->
@@ -502,40 +514,66 @@
         <em>{{ comment.timestamp|date:"F j, Y, g:i A" }}</em>
       </p>
       <p>{{ comment.content }}</p>
-      
-      <!-- Replies Section -->
-      <div class="replies ml-4 mt-2">
-        {% for reply in comment.replies.all %}
-        <div class="reply mb-2">
-          <p>
+<!-- Replies Section -->
+<div class="replies ml-4 mt-2">
+    {% for reply in comment.replies.all %}
+    <div class="reply mb-2">
+        <p>
             <strong>
-              <i class="fas fa-reply" style="margin-right: 5px"></i>
-              <a href="{% url 'author_profile' reply.author.id %}">
-                {{ reply.author.username }}
-              </a>
+                <i class="fas fa-reply" style="margin-right: 5px"></i>
+                <a href="{% url 'author_profile' reply.author.id %}">
+                    {{ reply.author.username }}
+                </a>
             </strong>
+            {% if reply.replied_to %}
+            <span>
+                <i class="fas fa-arrow-right" style="margin: 0 5px;"></i>
+                <a href="{% url 'author_profile' reply.replied_to.id %}">
+                    @{{ reply.replied_to.username }}
+                </a>
+            </span>
+            {% endif %}
             <em>{{ reply.timestamp|date:"F j, Y, g:i A" }}</em>
-          </p>
-          <p>{{ reply.content }}</p>
-        </div>
-        {% empty %}
-        <p>No replies yet.</p>
-        {% endfor %}
-      </div>
-      <hr>
-
-      <!-- Reply Form -->
-      {% if user.is_authenticated %}
-      <div class="reply-form">
-      <form method="post" class="mt-2">
+        </p>
+        <p>{{ reply.content }}</p>
+    </div>
+    {% empty %}
+    <p>No replies yet.</p>
+    {% endfor %}
+</div>
+<hr><!-- Reply Form -->
+{% if user.is_authenticated %}
+<div class="reply-form">
+    <form method="post" class="mt-2">
         {% csrf_token %}
-        {{ reply_form.as_p }}
+        {{ reply_form.as_p }}  <!-- This will render the fields of the reply form -->
+
+        <!-- Hidden field for the comment_id -->
         <input type="hidden" name="comment_id" value="{{ comment.id }}">
-        <button type="submit" name="reply_form" class="btn-primary btn-sm">
-          Reply
+
+        <!-- Check if there are replies before showing the dropdown -->
+        {% if unique_users %}
+            <label for="replied_to_id">Replying to:</label>
+            <select name="replied_to_id" id="replied_to_id" class="form-control">
+                <option value="">Select a user</option>
+                {% for user in unique_users %}
+                    <option value="{{ user.id }}">
+                        @{{ user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <p>No replies to show.</p>
+        {% endif %}
+
+        <button type="submit" name="reply_form" class="btn-primary btn-sm mt-2">
+            Reply
         </button>
-      </form>
-      {% endif %}
+    </form>
+</div>
+{% endif %}
+
+
     </div>
     {% empty %}
     <p>No comments yet.</p>
@@ -610,6 +648,23 @@
     }
     return cookieValue;
   }
+  document.querySelectorAll('.reply-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const commentId = this.dataset.commentId; // The comment ID
+            const userId = this.dataset.userId;       // The user ID to reply to
+            const inputField = document.getElementById(`replied-to-id-${commentId}`);
+            if (inputField) {
+                inputField.value = userId;
+            }
+        });
+    });
+      // When clicking the "Reply" button, fill in the "replied_to_id" field
+    document.querySelectorAll('.reply').forEach(function(reply) {
+        reply.querySelector('.btn-reply').addEventListener('click', function() {
+            var repliedToUserId = reply.querySelector('.reply-author').dataset.userId;
+            document.querySelector('[name="replied_to_id"]').value = repliedToUserId;
+        });
+    });
 </script>
 
 {% endblock %}

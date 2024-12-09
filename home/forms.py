@@ -3,6 +3,7 @@
 from django import forms
 from .models import Blog, Comment,Category,AuthorProfile# Import Comment model
 from .models import Reply
+from django.contrib.auth.models import User 
 
 
 
@@ -42,8 +43,13 @@ class AuthorProfileUpdateForm(forms.ModelForm):
 class ReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
-        fields = ['content']  # Include 'content' if needed
+        fields = ['content', 'replied_to']  # Add 'replied_to' field here
 
-    content = forms.CharField(label='Your Reply')  # This changes the label text to 'Your Reply'
+    content = forms.CharField(label='Your Reply')  # Your reply content
+    replied_to = forms.ModelChoiceField(
+        queryset=User.objects.all(),  # List all users
+        required=False,  # Make this field optional
+        widget=forms.HiddenInput()  # Keep it hidden if you're handling this server-side
+    )
 
 

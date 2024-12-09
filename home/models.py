@@ -30,21 +30,25 @@ class Tag(models.Model):
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the user who created the blog
-    banner = models.ImageField(upload_to='blog_banners/', null=True, blank=True)  # Optional image upload
-    slug = models.SlugField(unique=True, blank=True)  # Unique slug generated from title
-    body_content = models.TextField()  # Main content of the blog
-    timestamp = models.DateTimeField(auto_now_add=True)  # Automatically set to the time the blog is created
+    author = models.ForeignKey(User, on_delete=models.CASCADE)  
+    banner = models.ImageField(upload_to='blog_banners/', null=True, blank=True) 
+    slug = models.SlugField(unique=True, blank=True)  
+    body_content = models.TextField()  
+    timestamp = models.DateTimeField(auto_now_add=True)  
 
-    # Updated to use ManyToManyField for categories
-    categories = models.ManyToManyField(Category, related_name='blogs', blank=True)  # Link to categories
-    tags = models.ManyToManyField(Tag, related_name='blogs', blank=True)  # Link to tags
+    categories = models.ManyToManyField(Category, related_name='blogs', blank=True) 
+    tags = models.ManyToManyField(Tag, related_name='blogs', blank=True)  
+    views_count = models.PositiveIntegerField(default=0)
+    featured = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        # Automatically generate a slug from the title if not provided
         if not self.slug:
             self.slug = slugify(self.title)
         super(Blog, self).save(*args, **kwargs)
+
+    def increment_views(self):
+        self.views_count += 1
+        self.save()
 
     def __str__(self):
         return self.title
@@ -78,13 +82,21 @@ class Like(models.Model):
         return f'{self.user.username} likes {self.blog.title}'
     
 class Reply(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    # Author of the reply
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replies')
+    
+    # User who the reply is directed to
+    replied_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replied_to_replies', null=True, blank=True)
+    
+    # The comment that this reply is responding to
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
-        return f'Reply by {self.author} on {self.comment.blog.title}'
+        return f"Reply by {self.author.username} to {self.comment}"
+
 
 
     

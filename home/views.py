@@ -26,9 +26,15 @@ def blogs_list(request):
     return render(request, 'home/blogs.html', {'blogs': blogs, 'categories': categories, 'tags': tags})
 
 # Blog detail view with comments, likes, and related tags
+
 @login_required
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug)
+    
+    # Increment the views count for this specific blog
+    blog.views_count += 1
+    blog.save()
+
     comments = Comment.objects.filter(blog=blog).order_by('-timestamp')
     tags = blog.tags.all()
     is_liked = blog.likes.filter(user=request.user).exists()
@@ -51,6 +57,9 @@ def blog_detail(request, slug):
             new_reply = reply_form.save(commit=False)
             new_reply.comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
             new_reply.author = request.user
+            replied_to_id = request.POST.get('replied_to_id')
+            if replied_to_id:
+                new_reply.replied_to = get_object_or_404(User, id=replied_to_id)
             new_reply.save()
             messages.success(request, 'Your reply has been posted.')
             return redirect('blog_detail', slug=blog.slug)
@@ -59,6 +68,12 @@ def blog_detail(request, slug):
     comment_form = CommentForm()
     reply_form = ReplyForm()
 
+    # Collect unique users who have replied to any comment on this blog post
+    unique_users = set()
+    for comment in comments:
+        for reply in comment.replies.all():
+            unique_users.add(reply.author)
+
     return render(request, 'home/blog_detail.html', {
         'blog': blog,
         'comments': comments,
@@ -66,7 +81,9 @@ def blog_detail(request, slug):
         'reply_form': reply_form,
         'tags': tags,
         'is_liked': is_liked,
+        'unique_users': unique_users,  # Pass the unique users to the template
     })
+
 
 
 # Create blog view
