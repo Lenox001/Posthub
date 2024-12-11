@@ -199,7 +199,7 @@
   display: flex;
   flex-direction: column;
   width: 200px;
- 
+
 
   gap: 4px; /* Smaller gap between fields */
 }
@@ -396,7 +396,7 @@
 
 
 
-  
+
 </style>
 
 <div class="container py-5">
@@ -404,6 +404,15 @@
     <div class="col-lg-8 mx-auto">
       <!-- Blog Card -->
       <div class="card shadow-sm animated-card">
+          {% if request.user == blog.author or request.user.is_superuser %}
+<form method="POST" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" name="delete_blog" class="btn btn-danger">
+        <i class="fas fa-trash-alt"></i> Delete Blog
+    </button>
+</form>
+{% endif %}
+
         <!-- Blog Title -->
         <h1 class="card-title">{{ blog.title }}</h1>
 
@@ -466,7 +475,12 @@
             <p id="total-likes" class="text-info">
               Likes: {{ blog.likes.count }}
             </p>
-          
+            {% if user == blog.author or user.is_staff %}
+      <a href="{% url 'blog_update' slug=blog.slug %}" class="btn btn-outline-light">
+        Update Post
+      </a>
+      {% endif %}
+
 
 
           </div>
@@ -514,92 +528,116 @@
         <em>{{ comment.timestamp|date:"F j, Y, g:i A" }}</em>
       </p>
       <p>{{ comment.content }}</p>
-<!-- Replies Section -->
+      
+      <!-- Delete Comment button -->
+      {% if user == comment.author or user.is_staff %}
+        <form method="POST" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="comment_id" value="{{ comment.id }}">
+          <button type="submit" name="delete_comment" class="btn btn-danger btn-sm">
+            Delete Comment
+          </button>
+        </form>
+      {% endif %}
+
+      <!-- Replies Section -->
 <div class="replies ml-4 mt-2">
-    {% for reply in comment.replies.all %}
-    <div class="reply mb-2">
-        <p>
-            <strong>
-                <i class="fas fa-reply" style="margin-right: 5px"></i>
-                <a href="{% url 'author_profile' reply.author.id %}">
-                    {{ reply.author.username }}
-                </a>
-            </strong>
-            {% if reply.replied_to %}
-            <span>
-                <i class="fas fa-arrow-right" style="margin: 0 5px;"></i>
-                <a href="{% url 'author_profile' reply.replied_to.id %}">
-                    @{{ reply.replied_to.username }}
-                </a>
-            </span>
-            {% endif %}
-            <em>{{ reply.timestamp|date:"F j, Y, g:i A" }}</em>
-        </p>
-        <p>{{ reply.content }}</p>
-    </div>
-    {% empty %}
-    <p>No replies yet.</p>
-    {% endfor %}
-</div>
-<hr><!-- Reply Form -->
-{% if user.is_authenticated %}
-<div class="reply-form">
-    <form method="post" class="mt-2">
+  {% for reply in comment.replies.all %}
+  <div class="reply mb-2">
+    <p>
+      <strong>
+        <i class="fas fa-reply" style="margin-right: 5px"></i>
+        <a href="{% url 'author_profile' reply.author.id %}">
+          {{ reply.author.username }}
+        </a>
+      </strong>
+      {% if reply.replied_to %}
+      <span>
+        <i class="fas fa-arrow-right" style="margin: 0 5px;"></i>
+        <a href="{% url 'author_profile' reply.replied_to.id %}">
+          @{{ reply.replied_to.username }}
+        </a>
+      </span>
+      {% endif %}
+      <em>{{ reply.timestamp|date:"F j, Y, g:i A" }}</em>
+    </p>
+    <p>{{ reply.content }}</p>
+
+    <!-- Delete Reply button -->
+    {% if user == reply.author or user.is_staff %}
+      <form method="POST" style="display:inline;">
         {% csrf_token %}
-        {{ reply_form.as_p }}  <!-- This will render the fields of the reply form -->
-
-        <!-- Hidden field for the comment_id -->
-        <input type="hidden" name="comment_id" value="{{ comment.id }}">
-
-        <!-- Check if there are replies before showing the dropdown -->
-        {% if unique_users %}
-            <label for="replied_to_id">Replying to:</label>
-            <select name="replied_to_id" id="replied_to_id" class="form-control">
-                <option value="">Select a user</option>
-                {% for user in unique_users %}
-                    <option value="{{ user.id }}">
-                        @{{ user.username }}
-                    </option>
-                {% endfor %}
-            </select>
-        {% else %}
-            <p>No replies to show.</p>
-        {% endif %}
-
-        <button type="submit" name="reply_form" class="btn-primary btn-sm mt-2">
-            Reply
+        <input type="hidden" name="reply_id" value="{{ reply.id }}">
+        <button type="submit" name="delete_reply" class="btn btn-danger btn-sm">
+          Delete Reply
         </button>
-    </form>
-</div>
-{% endif %}
-
-
-    </div>
-    {% empty %}
-    <p>No comments yet.</p>
-    {% endfor %}
+      </form>
+    {% endif %}
   </div>
-  <hr>
-
- <h4 class="comment-heading">Add a Comment:</h4>
-<form method="post" class="comment-form">
-  {% csrf_token %}
-  {{ comment_form.as_p }}
-  <button type="submit" name="comment_form" class="btn submit-btn">
-    Post Comment
-  </button>
-</form>
-
-{% if messages %}
-<div class="alert comment-alert">
-  {% for message in messages %}
-  {{ message }}
+  {% empty %}
+  <p>No replies yet.</p>
   {% endfor %}
 </div>
-{% endif %}
+<hr>
 
+<!-- Reply Form -->
+{% if user.is_authenticated %}
+<div class="reply-form">
+  <form method="post" class="mt-2">
+    {% csrf_token %}
+    {{ reply_form.as_p }}  <!-- This will render the fields of the reply form -->
+
+    <!-- Hidden field for the comment_id -->
+    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+
+    <!-- Check if there are replies before showing the dropdown -->
+    {% if unique_users %}
+    <label for="replied_to_id">Replying to:</label>
+    <select name="replied_to_id" id="replied_to_id" class="form-control">
+      <option value="">Select a user</option>
+      {% for user in unique_users %}
+      <option value="{{ user.id }}">
+        @{{ user.username }}
+      </option>
+      {% endfor %}
+    </select>
+    {% else %}
+    <p>No replies to show.</p>
+    {% endif %}
+
+    <button type="submit" name="reply_form" class="btn-primary btn-sm mt-2">
+      Reply
+    </button>
+  </form>
+</div>
+{% endif %}
+</div>
+{% empty %}
+<p>No comments yet.</p>
+{% endfor %}
+</div>
+<hr>
+
+
+  <h4 class="comment-heading">Add a Comment:</h4>
+  <form method="post" class="comment-form">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" name="comment_form" class="btn submit-btn">
+      Post Comment
+    </button>
+  </form>
+
+  {% if messages %}
+  <div class="alert comment-alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
 
 </div>
+
 
 
 

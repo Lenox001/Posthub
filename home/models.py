@@ -43,16 +43,17 @@ class Blog(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Blog.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super(Blog, self).save(*args, **kwargs)
 
-    def increment_views(self):
-        self.views_count += 1
-        self.save()
-
     def __str__(self):
-        return self.title
-
+        return self.title  # Return the blog's title as its string representation
 
 class Comment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
@@ -68,6 +69,7 @@ class AuthorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    verification_code = models.IntegerField(null=True, blank=True)  # Add this line
 
     def __str__(self):
         return f'Profile of {self.user.username}'
@@ -98,5 +100,24 @@ class Reply(models.Model):
         return f"Reply by {self.author.username} to {self.comment}"
 
 
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('like', 'Like'),
+        ('comment', 'Comment'),
+        ('reply', 'Reply'),
+        ('follow', 'Follow'),
+    )
+    
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications', null=True, blank=True)
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+    message = models.TextField(blank=True)
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Notification for {self.recipient.username} - {self.notification_type}"
     

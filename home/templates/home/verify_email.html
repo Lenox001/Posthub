@@ -1,0 +1,13 @@
+<!-- templates/home/verify_email.html -->
+<form method="POST">
+    {% csrf_token %}
+    <label for="verification_code">Enter your verification code:</label>
+    <input type="text" name="verification_code" id="verification_code" required>
+    <button type="submit">Verify</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message">{{ message }}</div>
+    {% endfor %}
+{% endif %}

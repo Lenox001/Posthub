@@ -11,18 +11,19 @@ from django.contrib.auth.models import User
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog
-        fields = ['banner', 'title', 'body_content', 'slug', 'categories']  # Include categories
+        fields = ['banner', 'title', 'body_content', 'slug', 'categories']
         widgets = {
             'banner': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter blog title'}),
             'body_content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your content here', 'rows': 5}),
-            'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter slug (URL-friendly title)'}),
-            'categories': forms.CheckboxSelectMultiple()  # Display categories as checkboxes
+            'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter slug (URL-friendly title)', 'readonly': 'readonly'}),
+            'categories': forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):
         super(BlogForm, self).__init__(*args, **kwargs)
-        self.fields['categories'].queryset = Category.objects.all()  # Populate categories
+        self.fields['categories'].queryset = Category.objects.all()
+
 
 
 class CommentForm(forms.ModelForm):
